@@ -1,4 +1,4 @@
-module mac_unit
+module systolic_pe
 #(parameter data_size = 32)
 (input logic [data_size-1:0] in_data,
  input logic [data_size-1:0] in_sum, // aslo used to load the weights
