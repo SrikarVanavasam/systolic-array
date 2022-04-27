@@ -34,20 +34,20 @@ endif
 
 default:
 	@echo "-- VERILATE & BUILD --------"
-	$(VERILATOR) -cc --exe -sv matmul.sv mac.sv sim_main.cpp
+	$(VERILATOR) -cc --exe -sv matmul.sv systolic_pe.sv madd.sv VX_multiplier.sv VX_shift_register.sv sim_main.cpp
 	@echo "-- COMPILE -----------------"
 	$(MAKE) -j 4 -C obj_dir -f Vmatmul.mk 
 	@echo "-- RUN ---------------------"
 	obj_dir/Vmatmul
 	@echo "-- DONE --------------------"
 
-mac:
+pe:
 	@echo "-- VERILATE & BUILD --------"
-	$(VERILATOR) -cc --exe -sv mac.sv sim_mac.cpp
+	$(VERILATOR) -cc --exe -sv systolic_pe.sv madd.sv VX_multiplier.sv VX_shift_register.sv sim_pe.cpp
 	@echo "-- COMPILE -----------------"
-	$(MAKE) -j 4 -C obj_dir -f Vmac.mk 
+	$(MAKE) -j 4 -C obj_dir -f Vsystolic_pe.mk 
 	@echo "-- RUN ---------------------"
-	obj_dir/Vmac
+	obj_dir/Vsystolic_pe
 	@echo "-- DONE --------------------"
 
 ######################################################################

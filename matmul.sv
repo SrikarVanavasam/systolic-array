@@ -28,13 +28,13 @@ module matrix_multiply
 		// now generate 1st row of each col except top right block
 		for(i=1; i<MATRIX_SIZE; i++)
 			begin
-				systolic_pe #(.data_size(DATA_SIZE)) mu_row (.in_data(row_wire[i]), .in_sum(in_weights[i]), .out_data(row_wire[i+1]), .out_sum(col_wire[i]),  .reset(reset), .clk(clk), .ld_weight(ld_weight));
+				systolic_pe #(.data_size(DATA_SIZE)) pe_row (.in_data(row_wire[i]), .in_sum(in_weights[i]), .out_data(row_wire[i+1]), .out_sum(col_wire[i]),  .reset(reset), .clk(clk), .ld_weight(ld_weight));
 			end
 		// now generate 1st col of each row except top right block
 		for(j=1; j<MATRIX_SIZE; j++)
 			begin
 				localparam in_wire_count = MATRIX_SIZE*(j - 1);
-				systolic_pe #(.data_size(DATA_SIZE)) mu_col (.in_data(in_data[j]), .in_sum(col_wire[in_wire_count]), .out_data(row_wire[in_wire_count+MATRIX_SIZE+1]), .out_sum(col_wire[in_wire_count+MATRIX_SIZE]),  .reset(reset), .clk(clk), .ld_weight(ld_weight));
+				systolic_pe #(.data_size(DATA_SIZE)) pe_col (.in_data(in_data[j]), .in_sum(col_wire[in_wire_count]), .out_data(row_wire[in_wire_count+MATRIX_SIZE+1]), .out_sum(col_wire[in_wire_count+MATRIX_SIZE]),  .reset(reset), .clk(clk), .ld_weight(ld_weight));
 			end
         for(i=0; i<MATRIX_SIZE; i++)
             begin
@@ -42,7 +42,7 @@ module matrix_multiply
                 assign out_sum[i] = col_wire[MATRIX_SIZE * (MATRIX_SIZE - 1) + i];
             end
         // now add the top left block
-		systolic_pe #(.data_size(DATA_SIZE)) mu_top (.in_data(in_data[0]), .in_sum(in_weights[0]), .out_data(row_wire[1]), .out_sum(col_wire[0]),  .reset(reset), .clk(clk), .ld_weight(ld_weight));
+		systolic_pe #(.data_size(DATA_SIZE)) pe_top (.in_data(in_data[0]), .in_sum(in_weights[0]), .out_data(row_wire[1]), .out_sum(col_wire[0]),  .reset(reset), .clk(clk), .ld_weight(ld_weight));
 	endgenerate
 
 endmodule

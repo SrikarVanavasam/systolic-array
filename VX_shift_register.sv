@@ -1,6 +1,4 @@
-`include "VX_platform.vh"
 
-`TRACING_OFF
 module VX_shift_register_nr #( 
     parameter DATAW  = 1,
     parameter DEPTH  = 1,
@@ -121,7 +119,7 @@ module VX_shift_register #(
 
     end else begin        
 
-        `UNUSED_VAR (reset)
+        // `UNUSED_VAR (reset)
     
         VX_shift_register_nr #(
             .DATAW (DATAW),
@@ -138,4 +136,3 @@ module VX_shift_register #(
     end    
 
 endmodule
-`TRACING_ON
