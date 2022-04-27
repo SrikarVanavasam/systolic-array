@@ -58,6 +58,7 @@ module Scheduler #(
             begin
                 mult_counter += 1;
             end
+            
             if (mult_counter >= ((2*MATRIX_SIZE - 1) * 4)) begin        // need (2n-1)*4 cycles to finish up all the operations 
                 done_next = 1;
             end
