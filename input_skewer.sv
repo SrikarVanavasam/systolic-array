@@ -1,4 +1,4 @@
-module input_skew
+module input_skewer
 #(parameter MATRIX_SIZE = 2, DATA_SIZE = 32)
 
 (
