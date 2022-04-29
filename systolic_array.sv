@@ -5,17 +5,29 @@ module systolic_array
 (
     input logic [DATA_SIZE-1:0] in_data [MATRIX_SIZE-1:0],
     input logic [DATA_SIZE-1:0] in_weights [MATRIX_SIZE-1:0],
-    input logic load_weight [MATRIX_SIZE-1:0],
-    input logic enable_mult [MATRIX_SIZE-1:0],
+    input logic [MATRIX_SIZE-1:0] load_weight,          // from scheduler
+    input logic [MATRIX_SIZE-1:0] enable_mult ,         // from scheduler
     input logic reset, clk,
-    output logic [DATA_SIZE-1:0] out_sum [MATRIX_SIZE-1:0]);
-)
+    output logic [DATA_SIZE-1:0] out_sum [MATRIX_SIZE-1:0]
+);
 
 // internal wires
 logic [DATA_SIZE-1:0] row_wire [MATRIX_SIZE*MATRIX_SIZE-1:0];
 logic [DATA_SIZE-1:0] col_wire [MATRIX_SIZE*MATRIX_SIZE-1:0];
-logic load_weight_wire [MATRIX_SIZE*MATRIX_SIZE-1:0];           // horizontal passthrough
-logic enable_mult_wire [MATRIX_SIZE*MATRIX_SIZE-1:0];           // horizontal passthrough
+logic ld_weight_wire [MATRIX_SIZE*MATRIX_SIZE-1:0];           // horizontal passthrough
+logic PE_enable_wire [MATRIX_SIZE*MATRIX_SIZE-1:0];           // horizontal passthrough
+
+logic ld_weight [MATRIX_SIZE-1:0];
+logic PE_enable [MATRIX_SIZE-1:0];
+
+initial begin
+    genvar h;
+    for (h = 0; h < MATRIX_SIZE; h++)
+    begin
+        assign ld_weight[h] = load_weight[h];
+        assign PE_enable[h] = enable_mult[h];
+    end
+end
 
 genvar i, j;    //i: row index; j: col index
 generate
@@ -28,8 +40,8 @@ generate
             // horizontal wires
             localparam in_data_wire_index = PE_index - 1;
             localparam out_data_wire_index = PE_index;
-            // load_weight_in wire at the same location as the in_data wire
-            // load_weight_out wire at the same location as the out_data wire
+            // ld_weight_in wire at the same location as the in_data wire
+            // ld_weight_out wire at the same location as the out_data wire
             // vertical wires
             localparam in_sum_wire_index = PE_index - MATRIX_SIZE;
             localparam out_sum_wire_index = PE_index;
@@ -40,12 +52,11 @@ generate
                                 .out_sum(col_wire[out_sum_wire_index]), 
                                 .reset(reset), 
                                 .clk(clk), 
-                                .ld_weight_in(load_weight_wire[in_data_wire_index]),
-                                .ld_weight_out(load_weight_wire[out_data_wire_index]),
-                                .enable_in(enable_mult_wire[in_data_wire_index]),
-                                .enable_out(enable_mult_wire[out_data_wire_index])       );
+                                .ld_weight_in(ld_weight_wire[in_data_wire_index]),
+                                .ld_weight_out(ld_weight_wire[out_data_wire_index]),
+                                .enable_in(PE_enable_wire[in_data_wire_index]),
+                                .enable_out(PE_enable_wire[out_data_wire_index])       );
         end
-
     end
 
     // PE_2:
@@ -56,8 +67,8 @@ generate
         // horizontal wires
         localparam in_data_wire_index = PE_index - 1;
         localparam out_data_wire_index = PE_index;
-        // load_weight_in wire at the same location as the in_data wire
-        // load_weight_out wire at the same location as the out_data wire
+        // ld_weight_in wire at the same location as the in_data wire
+        // ld_weight_out wire at the same location as the out_data wire
         // vertical wires
         localparam out_sum_wire_index = PE_index;
         systolic_pe #   (   .data_size(DATA_SIZE)) pe_2 
@@ -67,10 +78,10 @@ generate
                             .out_sum(col_wire[out_sum_wire_index]), 
                             .reset(reset), 
                             .clk(clk), 
-                            .ld_weight_in(load_weight_wire[in_data_wire_index]),
-                            .ld_weight_out(load_weight_wire[out_data_wire_index]),
-                            .enable_in(enable_mult_wire[in_data_wire_index]),
-                            .enable_out(enable_mult_wire[out_data_wire_index])        );
+                            .ld_weight_in(ld_weight_wire[in_data_wire_index]),
+                            .ld_weight_out(ld_weight_wire[out_data_wire_index]),
+                            .enable_in(PE_enable_wire[in_data_wire_index]),
+                            .enable_out(PE_enable_wire[out_data_wire_index])        );
     end
 
     // PE_3:
@@ -80,7 +91,7 @@ generate
         localparam PE_index = MATRIX_SIZE * i + j;
         // horizontal wires
         localparam out_data_wire_index = PE_index;
-        // load_weight_out wire at the same location as the out_data wire
+        // ld_weight_out wire at the same location as the out_data wire
         // vertical wires
         localparam in_sum_wire_index = PE_index - MATRIX_SIZE;
         localparam out_sum_wire_index = PE_index;
@@ -91,11 +102,10 @@ generate
                             .out_sum(col_wire[out_sum_wire_index]), 
                             .reset(reset), 
                             .clk(clk), 
-                            .ld_weight_in(load_weight[i]),
-                            .ld_weight_out(load_weight_wire[out_data_wire_index]),
-                            .enable_in(enable_mult[i]),
-                            .enable_out(enable_mult_wire[out_data_wire_index])       );
-
+                            .ld_weight_in(ld_weight[i]),
+                            .ld_weight_out(ld_weight_wire[out_data_wire_index]),
+                            .enable_in(PE_enable[i]),
+                            .enable_out(PE_enable_wire[out_data_wire_index])       );
     end
 
     // PE_4:
@@ -106,10 +116,9 @@ generate
                         .out_sum(col_wire[0]), 
                         .reset(reset), 
                         .clk(clk), 
-                        .ld_weight_in(load_weight[0]),
-                        .ld_weight_out(load_weight_wire[0])      );
+                        .ld_weight_in(ld_weight[0]),
+                        .ld_weight_out(ld_weight_wire[0])      );
     
-
     // Map column wires to output
     for (j = 0; j < MATRIX_SIZE; i++)
     begin
