@@ -14,8 +14,8 @@ module systolic_array
 // internal wires
 logic [DATA_SIZE-1:0] row_wire [MATRIX_SIZE*MATRIX_SIZE-1:0];
 logic [DATA_SIZE-1:0] col_wire [MATRIX_SIZE*MATRIX_SIZE-1:0];
-logic ld_weight_wire [MATRIX_SIZE*MATRIX_SIZE-1:0];           // horizontal passthrough
-logic PE_enable_wire [MATRIX_SIZE*MATRIX_SIZE-1:0];           // horizontal passthrough
+// logic ld_weight_wire [MATRIX_SIZE*MATRIX_SIZE-1:0];           // horizontal passthrough
+// logic PE_enable_wire [MATRIX_SIZE*MATRIX_SIZE-1:0];           // horizontal passthrough
 
 logic ld_weight [MATRIX_SIZE-1:0];
 logic PE_enable [MATRIX_SIZE-1:0];
@@ -52,10 +52,12 @@ generate
                                 .out_sum(col_wire[out_sum_wire_index]), 
                                 .reset(reset), 
                                 .clk(clk), 
-                                .ld_weight_in(ld_weight_wire[in_data_wire_index]),
-                                .ld_weight_out(ld_weight_wire[out_data_wire_index]),
-                                .enable_in(PE_enable_wire[in_data_wire_index]),
-                                .enable_out(PE_enable_wire[out_data_wire_index])       );
+                                // .ld_weight_in(ld_weight_wire[in_data_wire_index]),
+                                // .ld_weight_out(ld_weight_wire[out_data_wire_index]),
+                                // .enable_in(PE_enable_wire[in_data_wire_index]),
+                                // .enable_out(PE_enable_wire[out_data_wire_index]),
+                                .enable(PE_enable[i]),
+                                .ld_weight(ld_weight[i]));
         end
     end
 
@@ -78,10 +80,12 @@ generate
                             .out_sum(col_wire[out_sum_wire_index]), 
                             .reset(reset), 
                             .clk(clk), 
-                            .ld_weight_in(ld_weight_wire[in_data_wire_index]),
-                            .ld_weight_out(ld_weight_wire[out_data_wire_index]),
-                            .enable_in(PE_enable_wire[in_data_wire_index]),
-                            .enable_out(PE_enable_wire[out_data_wire_index])        );
+                            // .ld_weight_in(ld_weight_wire[in_data_wire_index]),
+                            // .ld_weight_out(ld_weight_wire[out_data_wire_index]),
+                            // .enable_in(PE_enable_wire[in_data_wire_index]),
+                            // .enable_out(PE_enable_wire[out_data_wire_index]),
+                            .enable(PE_enable[0]),
+                            .ld_weight(ld_weight[0]));
     end
 
     // PE_3:
@@ -102,10 +106,12 @@ generate
                             .out_sum(col_wire[out_sum_wire_index]), 
                             .reset(reset), 
                             .clk(clk), 
-                            .ld_weight_in(ld_weight[i]),
-                            .ld_weight_out(ld_weight_wire[out_data_wire_index]),
-                            .enable_in(PE_enable[i]),
-                            .enable_out(PE_enable_wire[out_data_wire_index])       );
+                            // .ld_weight_in(ld_weight[i]),
+                            // .ld_weight_out(ld_weight_wire[out_data_wire_index]),
+                            // .enable_in(PE_enable[i]),
+                            // .enable_out(PE_enable_wire[out_data_wire_index]),       
+                            .enable(PE_enable[i]),
+                            .ld_weight(ld_weight[i]));
     end
 
     // PE_4:
@@ -116,10 +122,12 @@ generate
                         .out_sum(col_wire[0]), 
                         .reset(reset), 
                         .clk(clk), 
-                        .ld_weight_in(ld_weight[0]),
-                        .ld_weight_out(ld_weight_wire[0]),
-                        .enable_in(PE_enable[0]),
-                        .enable_out(PE_enable_wire[0])       );
+                        // .ld_weight_in(ld_weight[0]),
+                        // .ld_weight_out(ld_weight_wire[0]),
+                        // .enable_in(PE_enable[0]),
+                        // .enable_out(PE_enable_wire[0]),
+                        .enable(PE_enable[0]),
+                        .ld_weight(ld_weight[0]));
     
     // Map column wires to output
     for (j = 0; j < MATRIX_SIZE; j++)
