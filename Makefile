@@ -34,7 +34,7 @@ endif
 
 default:
 	@echo "-- VERILATE & BUILD --------"
-	$(VERILATOR) -cc --exe -sv matmul.sv systolic_pe.sv madd.sv VX_multiplier.sv VX_shift_register.sv sim_main.cpp
+	$(VERILATOR) -cc --exe -sv systolic_array_frame.sv scheduler.sv input_skewer.sv systolic_pe.sv madd.sv VX_multiplier.sv VX_shift_register.sv sim_main.cpp
 	@echo "-- COMPILE -----------------"
 	$(MAKE) -j 4 -C obj_dir -f Vmatmul.mk 
 	@echo "-- RUN ---------------------"

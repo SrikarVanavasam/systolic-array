@@ -49,7 +49,7 @@ module scheduler #(
     always @ (*) begin
         if (done_next == 0) begin
             if (done_load == 1 && mult_counter[1:0] == 2'b00) begin        // every 4 cycles, enable another row of PE
-                enable_mult_next = {1'b1, MATRIX_SIZE{1'b0}} | (enable_mult>>1);     // adding a 1 to the MSB
+                enable_mult_next = {1'b1, {MATRIX_SIZE{1'b0}}} | (enable_mult>>1);     // adding a 1 to the MSB
                 mult_counter += 1;
             end
             else 

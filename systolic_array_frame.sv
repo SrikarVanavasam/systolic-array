@@ -14,7 +14,7 @@ input_skewer #(.MATRIX_SIZE(MATRIX_SIZE), .DATA_SIZE(DATA_SIZE))
 my_input_skewer (
     .reset(reset),
     .clk(clk),
-    .enable(enable),
+    .enable_in(enable),
     .data(data_input),
     .data_skewed(data_skewed_out)
 );
@@ -25,9 +25,9 @@ my_scheduler (
     .clk(clk),
     .general_enable(enable),
     .load_weight(load_weight),
-    .enable_mult(enable_mult)
+    .enable_mult(enable_mult),
     .done(finished)
-)
+);
 
 
 systolic_array #(.MATRIX_SIZE(MATRIX_SIZE), .DATA_SIZE(DATA_SIZE))
@@ -44,4 +44,4 @@ my_systolic_array (
 
 
 
-end module
+endmodule

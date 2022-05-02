@@ -4,7 +4,7 @@ module input_skewer
 (
     input logic [DATA_SIZE-1:0] data [MATRIX_SIZE-1:0],
     input logic reset, clk, enable_in,
-    output logic [DATA_SIZE-1:0] data_skewed [MATRIX_SIZE-1:0],
+    output logic [DATA_SIZE-1:0] data_skewed [MATRIX_SIZE-1:0]
 );
 
 assign data_skewed[0] = data[0];    // first row does not need delay
