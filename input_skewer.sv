@@ -8,10 +8,11 @@ module input_skewer
 );
 
 assign data_skewed[0] = data[0];    // first row does not need delay
-reg [DATA_SIZE-1:0] one_cycle_shift [MATRIX_SIZE-1:0];
+assign data_skewed[1] = one_cycle_shift;
+
+reg [DATA_SIZE-1:0] one_cycle_shift;
 
 always @(clk) begin
-    data_skewed[1] = one_cycle_shift;
     one_cycle_shift = data[1];
 end
 
