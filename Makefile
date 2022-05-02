@@ -34,11 +34,11 @@ endif
 
 default:
 	@echo "-- VERILATE & BUILD --------"
-	$(VERILATOR) -cc --exe -sv systolic_array_frame.sv systolic_array.sv scheduler.sv input_skewer.sv systolic_pe.sv madd.sv VX_multiplier.sv VX_shift_register.sv sim_main.cpp
+	$(VERILATOR) -cc --trace --exe -sv systolic_array_frame.sv systolic_array.sv scheduler.sv input_skewer.sv systolic_pe.sv madd.sv VX_multiplier.sv VX_shift_register.sv sim_main.cpp
 	@echo "-- COMPILE -----------------"
-	$(MAKE) -j 4 -C obj_dir -f Vmatmul.mk 
+	$(MAKE) -j 4 -C obj_dir -f Vsystolic_array_frame.mk 
 	@echo "-- RUN ---------------------"
-	obj_dir/Vmatmul
+	obj_dir/Vsystolic_array_frame
 	@echo "-- DONE --------------------"
 
 pe:
@@ -48,6 +48,24 @@ pe:
 	$(MAKE) -j 4 -C obj_dir -f Vsystolic_pe.mk 
 	@echo "-- RUN ---------------------"
 	obj_dir/Vsystolic_pe
+	@echo "-- DONE --------------------"
+
+skew:
+	@echo "-- VERILATE & BUILD --------"
+	$(VERILATOR) -cc --exe -sv input_skewer.sv VX_shift_register.sv sim_skew.cpp
+	@echo "-- COMPILE -----------------"
+	$(MAKE) -j 4 -C obj_dir -f Vinput_skewer.mk 
+	@echo "-- RUN ---------------------"
+	obj_dir/Vinput_skewer
+	@echo "-- DONE --------------------"
+
+sched:
+	@echo "-- VERILATE & BUILD --------"
+	$(VERILATOR) -cc --trace --exe -sv scheduler.sv sim_sched.cpp
+	@echo "-- COMPILE -----------------"
+	$(MAKE) -j 4 -C obj_dir -f Vscheduler.mk 
+	@echo "-- RUN ---------------------"
+	obj_dir/Vscheduler
 	@echo "-- DONE --------------------"
 
 ######################################################################

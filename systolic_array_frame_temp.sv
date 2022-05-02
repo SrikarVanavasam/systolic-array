@@ -24,8 +24,7 @@ wire done_load;
 wire enable_schdeuler;
 
 // handshake implementation
-assign enable_schdeuler = enable && input_ready;
-
+assign enable_schdeuler = enable & input_ready;
 
 input_skewer #(.MATRIX_SIZE(MATRIX_SIZE), .DATA_SIZE(DATA_SIZE))   
 my_input_skewer (
