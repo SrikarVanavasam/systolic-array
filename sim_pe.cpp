@@ -31,18 +31,18 @@ int main(int argc, char **argv, char **env)
         else
         {
             pe->reset = 0; // Deassert reset
-            pe->enable = 1;
+            pe->enable_in = 1;
         }
         // Load a weight
         if (timestamp == 20)
         {
-            pe->ld_weight = 1;
+            pe->ld_weight_in = 1;
             pe->in_sum = 3;
         }
         // Perform multiply
         if (timestamp == 30)
         {
-            pe->ld_weight = 0;
+            pe->ld_weight_in = 0;
             pe->in_sum = 1;
             pe->in_data = 2;
         }

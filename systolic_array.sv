@@ -20,13 +20,14 @@ logic PE_enable_wire [MATRIX_SIZE*MATRIX_SIZE-1:0];           // horizontal pass
 logic ld_weight [MATRIX_SIZE-1:0];
 logic PE_enable [MATRIX_SIZE-1:0];
 
-initial begin
+genvar h;
+generate
     for (h = 0; h < MATRIX_SIZE; h++)
     begin
         assign ld_weight[h] = load_weight[h];
         assign PE_enable[h] = enable_mult[h];
     end
-end
+endgenerate
 
 genvar i, j;    //i: row index; j: col index
 generate
@@ -59,7 +60,7 @@ generate
     end
 
     // PE_2:
-    assign i = 0;      // only the first row
+    //  i = 0;      // only the first row
     for (j = 1; j < MATRIX_SIZE; j++)       // excluding the first col
     begin
         localparam PE_index = j;
@@ -84,7 +85,7 @@ generate
     end
 
     // PE_3:
-    // assign j = 0;      // only the first col
+    //  j = 0;      // only the first col
     for (i = 1; i < MATRIX_SIZE; i++)       // excluding the first row
     begin
         localparam PE_index = MATRIX_SIZE * i;
@@ -116,13 +117,15 @@ generate
                         .reset(reset), 
                         .clk(clk), 
                         .ld_weight_in(ld_weight[0]),
-                        .ld_weight_out(ld_weight_wire[0])      );
+                        .ld_weight_out(ld_weight_wire[0]),
+                        .enable_in(PE_enable[0]),
+                        .enable_out(PE_enable_wire[0])       );
     
     // Map column wires to output
-    for (j = 0; j < MATRIX_SIZE; i++)
+    for (j = 0; j < MATRIX_SIZE; j++)
     begin
         // Map column wires to output
-        assign out_sum[i] = col_wire[MATRIX_SIZE * (MATRIX_SIZE - 1) + i];
+        assign out_sum[j] = col_wire[MATRIX_SIZE * (MATRIX_SIZE - 1) + j];
     end
 endgenerate
 endmodule

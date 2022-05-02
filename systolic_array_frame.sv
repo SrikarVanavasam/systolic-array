@@ -10,6 +10,11 @@ module systolic_array_frame
     output logic finished
 );
 
+wire [DATA_SIZE-1:0] data_skewed_out [MATRIX_SIZE-1:0];
+wire [MATRIX_SIZE-1:0] load_weight;
+wire [MATRIX_SIZE-1:0] enable_mult;
+
+
 input_skewer #(.MATRIX_SIZE(MATRIX_SIZE), .DATA_SIZE(DATA_SIZE))   
 my_input_skewer (
     .reset(reset),
