@@ -65,10 +65,23 @@ module Scheduler #(
         end
     end
 
-    always @(posedge clk) begin
-        done <= done_next;
-        enable_mult <= enable_mult_next;
-        load_weight <= load_weight_next;
+    always @(posedge clk or reset) begin
+        if (reset) begin
+            load_weight_next = {MATRIX_SIZE{1'b0}};
+            enable_mult_next = {MATRIX_SIZE{1'b0}};
+            load_counter = 0;
+            mult_counter = 0;
+            done_load = 0;
+            done_next = 0;
+            done <= 0;
+            enable_mult <= 0;
+            load_weight <= 0;
+        end
+        else if (general_enable == 1) begin
+            done <= done_next;
+            enable_mult <= enable_mult_next;
+            load_weight <= load_weight_next;
+        end
     end
     
     
