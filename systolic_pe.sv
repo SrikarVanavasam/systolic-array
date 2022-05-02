@@ -12,7 +12,7 @@ reg [DATA_SIZE-1:0] weight;
 wire[DATA_SIZE-1:0] madd_out;
 wire[DATA_SIZE-1:0] shift_out;
 madd #(.DATA_SIZE(DATA_SIZE), .MULTIPLY_CYCLES(3)) madd_unit (.clk(clk), .enable(enable_in), .reset(reset), .dataa(in_data), .datab(weight), .datac(in_sum), .result(madd_out));
-VX_shift_register #(.DATAW(DATA_SIZE), .RESETW(0), .DEPTH(4), .NTAPS(1))
+VX_shift_register #(.DATAW(DATA_SIZE), .RESETW(0), .DEPTH(3), .NTAPS(1))
 				shift_reg (.clk(clk), .reset(reset), .enable(enable_in), .data_in(in_data), .data_out(shift_out));
 always_ff @(posedge clk)
 	begin

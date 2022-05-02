@@ -1,9 +1,7 @@
-module Scheduler #(
+module scheduler #(
     parameter MATRIX_SIZE = 2, 
     parameter DATA_SIZE = 32
 ) (
-    input wire [DATA_SIZE-1:0] in_data [MATRIX_SIZE-1:0],
-    input wire [DATA_SIZE-1:0] in_weights [MATRIX_SIZE-1:0],
     input wire clk, reset, general_enable, 
     output wire [MATRIX_SIZE-1:0] load_weight,     // each bit controls one row
     output wire [MATRIX_SIZE-1:0] enable_mult,     // each bit controls one row
