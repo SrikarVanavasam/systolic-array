@@ -12,21 +12,24 @@ module scheduler #(
     reg[MATRIX_SIZE:0] load_counter;
     reg[MATRIX_SIZE+2 : 0] mult_counter;
     reg done_load;      // internal signal that indicates loading is finished
+    reg 
     
     // signals for pipelining
     reg[MATRIX_SIZE-1:0] load_weight_next;
     reg[MATRIX_SIZE-1:0] enable_mult_next;
-    reg done_next;
+    reg [MATRIX_SIZE-1:0] load_weight_reg,     // each bit controls one row
+    reg [MATRIX_SIZE-1:0] enable_mult_reg,     // each bit controls one row
+    reg done_reg;
 
     // initialize signals
-    initial begin
-        load_weight_next = {MATRIX_SIZE{1'b0}};
-        enable_mult_next = {MATRIX_SIZE{1'b0}};
-        load_counter = 0;
-        mult_counter = 0;
-        done_load = 0;
-        done_next = 0;
-    end
+    // initial begin
+    //     load_weight_next = {MATRIX_SIZE{1'b0}};
+    //     enable_mult_next = {MATRIX_SIZE{1'b0}};
+    //     load_counter = 0;
+    //     mult_counter = 0;
+    //     done_load = 0;
+    //     done_next = 0;
+    // end
 
     always @ (*) begin
         while (load_counter < MATRIX_SIZE)
@@ -49,7 +52,7 @@ module scheduler #(
     always @ (*) begin
         if (done_next == 0) begin
             if (done_load == 1 && mult_counter[1:0] == 2'b00) begin        // every 4 cycles, enable another row of PE
-                enable_mult_next = {1'b1, {MATRIX_SIZE{1'b0}}} | (enable_mult>>1);     // adding a 1 to the MSB
+                enable_mult_next = {1'b1, {MATRIX_SIZE-1{1'b0}}} | (enable_mult>>1);     // adding a 1 to the MSB
                 mult_counter += 1;
             end
             else 
@@ -71,16 +74,19 @@ module scheduler #(
             mult_counter = 0;
             done_load = 0;
             done_next = 0;
-            done <= 0;
-            enable_mult <= 0;
-            load_weight <= 0;
+            // done <= 0;
+            // enable_mult <= 0;
+            // load_weight <= 0;
         end
         else if (general_enable == 1) begin
-            done <= done_next;
-            enable_mult <= enable_mult_next;
-            load_weight <= load_weight_next;
+            done_reg <= done_next;
+            enable_mult_reg <= enable_mult_next;
+            load_weight_reg <= load_weight_next;
         end
     end
-    
+
+    assign done = done_reg;
+    assign enable_mult = enable_mult_reg;
+    assign load_weight = load_weight_reg;
     
 endmodule
