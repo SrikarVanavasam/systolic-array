@@ -5,7 +5,7 @@ module scheduler #(
     input wire clk, reset, general_enable, 
     output wire [MATRIX_SIZE-1:0] load_weight,     // each bit controls one row
     output wire [MATRIX_SIZE-1:0] enable_mult,     // each bit controls one row
-    output wire done_load_wire,
+    // output wire done_load_wire,
     output wire done
 );
     
@@ -33,7 +33,7 @@ module scheduler #(
     // end
 
     always @ (posedge clk) begin
-        while (load_counter < MATRIX_SIZE)
+        if (load_counter < MATRIX_SIZE)
         begin
             if (load_counter < MATRIX_SIZE-1)
             begin
@@ -79,14 +79,15 @@ module scheduler #(
             // enable_mult <= 0;
             // load_weight <= 0;
         end
-        else if (general_enable == 1) begin
+        else if (general_enable) begin
+
             done_reg <= done_next;
             enable_mult_reg <= enable_mult_next;
             load_weight_reg <= load_weight_next;
         end
     end
 
-    assign done_load_wire = done_load;
+    // assign done_load_wire = done_load;
     assign done = done_reg;
     assign enable_mult = enable_mult_reg;
     assign load_weight = load_weight_reg;
