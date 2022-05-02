@@ -3,9 +3,9 @@ module scheduler #(
     parameter DATA_SIZE = 32
 ) (
     input wire clk, reset, general_enable, 
-    output reg [MATRIX_SIZE-1:0] load_weight,     // each bit controls one row
-    output reg [MATRIX_SIZE-1:0] enable_mult,     // each bit controls one row
-    output reg done
+    output wire [MATRIX_SIZE-1:0] load_weight,     // each bit controls one row
+    output wire [MATRIX_SIZE-1:0] enable_mult,     // each bit controls one row
+    output wire done
 );
     
     // internal signals
