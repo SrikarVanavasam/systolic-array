@@ -7,7 +7,7 @@ module systolic_array_frame
     input logic [DATA_SIZE-1:0] weights_input [MATRIX_SIZE-1:0],
     input logic clk, reset, enable,
     output logic [DATA_SIZE-1:0] result_out [MATRIX_SIZE-1:0],
-    output logic done
+    output logic finished
 );
 
 input_skewer #(.MATRIX_SIZE(MATRIX_SIZE), .DATA_SIZE(DATA_SIZE))   
@@ -26,6 +26,7 @@ my_scheduler (
     .general_enable(enable),
     .load_weight(load_weight),
     .enable_mult(enable_mult)
+    .done(finished)
 )
 
 
