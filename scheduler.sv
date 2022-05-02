@@ -12,13 +12,13 @@ module scheduler #(
     reg[MATRIX_SIZE:0] load_counter;
     reg[MATRIX_SIZE+2 : 0] mult_counter;
     reg done_load;      // internal signal that indicates loading is finished
-    reg 
+    reg done_next;
     
     // signals for pipelining
     reg[MATRIX_SIZE-1:0] load_weight_next;
     reg[MATRIX_SIZE-1:0] enable_mult_next;
-    reg [MATRIX_SIZE-1:0] load_weight_reg,     // each bit controls one row
-    reg [MATRIX_SIZE-1:0] enable_mult_reg,     // each bit controls one row
+    reg [MATRIX_SIZE-1:0] load_weight_reg;     // each bit controls one row
+    reg [MATRIX_SIZE-1:0] enable_mult_reg;     // each bit controls one row
     reg done_reg;
 
     // initialize signals
@@ -31,7 +31,7 @@ module scheduler #(
     //     done_next = 0;
     // end
 
-    always @ (*) begin
+    always @ (posedge clk) begin
         while (load_counter < MATRIX_SIZE)
         begin
             if (load_counter < MATRIX_SIZE-1)
@@ -49,7 +49,7 @@ module scheduler #(
         end
     end
 
-    always @ (*) begin
+    always @ (posedge clk) begin
         if (done_next == 0) begin
             if (done_load == 1 && mult_counter[1:0] == 2'b00) begin        // every 4 cycles, enable another row of PE
                 enable_mult_next = {1'b1, {MATRIX_SIZE-1{1'b0}}} | (enable_mult>>1);     // adding a 1 to the MSB
@@ -66,7 +66,7 @@ module scheduler #(
         end
     end
 
-    always @(posedge clk or reset) begin
+    always @(posedge clk or posedge reset) begin
         if (reset) begin
             load_weight_next = {MATRIX_SIZE{1'b0}};
             enable_mult_next = {MATRIX_SIZE{1'b0}};
