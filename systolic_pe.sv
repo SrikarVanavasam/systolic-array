@@ -4,7 +4,7 @@ module systolic_pe
  input logic [DATA_SIZE-1:0] in_data,
  input logic [DATA_SIZE-1:0] in_sum, // aslo used to load the weights
  input logic clk, reset, enable_in, ld_weight_in,
- output ld_weight_out,
+ output logic enable_out, ld_weight_out,
  output reg [DATA_SIZE-1:0] out_data,
  output reg [DATA_SIZE-1:0] out_sum);
 
