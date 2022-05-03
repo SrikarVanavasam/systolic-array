@@ -21,29 +21,45 @@ int main(int argc, char **argv, char **env)
             pe->clk = !pe->clk;
             if (pe->clk)
             {
-                std::cout << "Cycle: " << timestamp / (CLOCK_PERIOD * 2) << " Out Sum: " << pe->out_sum << " " << pe->out_data << std::endl;
+                std::cout << "Cycle: " << timestamp / (CLOCK_PERIOD * 2) << " Out Sum: " << pe->out_sum << " Out Data: " << pe->out_data << std::endl;
             }
         }
-        if (timestamp > 1 && timestamp < RESET_TIME)
+        if (timestamp < RESET_TIME)
         {
             pe->reset = 1; // Assert reset
         }
         else
         {
             pe->reset = 0; // Deassert reset
-            pe->enable_in = 1;
+            pe->enable = 1;
         }
         // Load a weight
         if (timestamp == 20)
         {
-            pe->ld_weight_in = 1;
+            pe->ld_weight = 1;
             pe->in_sum = 3;
+            printf("load weight cycle\n");
         }
         // Perform multiply
         if (timestamp == 30)
         {
-            pe->ld_weight_in = 0;
+            pe->ld_weight = 0;
             pe->in_sum = 1;
+            pe->in_data = 2;
+        }
+        if (timestamp == 40)
+        {
+            pe->in_sum = 3;
+            pe->in_data = 4;
+        }
+        if (timestamp == 50)
+        {
+            pe->in_sum = 3;
+            pe->in_data = 3;
+        }
+        if (timestamp == 60)
+        {
+            pe->in_sum = 2;
             pe->in_data = 2;
         }
 

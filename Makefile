@@ -68,6 +68,15 @@ sched:
 	obj_dir/Vscheduler
 	@echo "-- DONE --------------------"
 
+array:
+	@echo "-- VERILATE & BUILD --------"
+	$(VERILATOR) -cc --trace --exe -sv systolic_array.sv systolic_pe.sv madd.sv VX_multiplier.sv VX_shift_register.sv sim_array.cpp
+	@echo "-- COMPILE -----------------"
+	$(MAKE) -j 4 -C obj_dir -f Vsystolic_array.mk 
+	@echo "-- RUN ---------------------"
+	obj_dir/Vsystolic_array
+	@echo "-- DONE --------------------"
+
 ######################################################################
 
 maintainer-copy::
