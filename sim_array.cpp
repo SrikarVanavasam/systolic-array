@@ -101,9 +101,9 @@ int main(int argc, char **argv, char **env)
         trace->dump(timestamp);
         timestamp++;
     }
-    systolic_array_frame->final();
+    systolic_array->final();
     trace->close();
     delete trace;
-    delete systolic_array_frame;
+    delete systolic_array;
     return 0;
 }
