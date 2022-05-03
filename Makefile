@@ -61,7 +61,7 @@ pe:
 
 skew:
 	@echo "-- VERILATE & BUILD --------"
-	$(VERILATOR) -cc --exe -sv input_skewer.sv VX_shift_register.sv sim_skew.cpp
+	$(VERILATOR) -cc --exe --trace -sv input_skewer.sv VX_shift_register.sv sim_skew.cpp
 	@echo "-- COMPILE -----------------"
 	$(MAKE) -j 4 -C obj_dir -f Vinput_skewer.mk 
 	@echo "-- RUN ---------------------"

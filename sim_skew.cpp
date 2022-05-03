@@ -1,5 +1,6 @@
 #include <iostream>
 #include "verilated.h"
+#include <verilated_vcd_c.h>
 #include "Vinput_skewer.h"
 #include "Vinput_skewer__Syms.h"
 
@@ -14,6 +15,11 @@ uint64_t timestamp = 0;
 int main(int argc, char **argv, char **env)
 {
     Vinput_skewer *skew = new Vinput_skewer;
+
+    Verilated::traceEverOn(true);
+    auto trace = new VerilatedVcdC();
+    skew->trace(trace, 2999);
+    trace->open("trace.vcd");
     while (timestamp < RUN_CYCLES)
     {
         if (!(timestamp % CLOCK_PERIOD))
@@ -35,17 +41,22 @@ int main(int argc, char **argv, char **env)
         }
         if (timestamp == 20)
         {
+            skew->data[0] = 3;
             skew->data[1] = 6;
         }
-        if (timestamp == 30)
+        if (timestamp == 60)
         {
-            skew->data[0] = 3;
+            skew->data[0] = 1;
+            skew->data[1] = 2;
         }
 
         skew->eval();
+        trace->dump(timestamp);
         timestamp++;
     }
     skew->final();
+    trace->close();
+    delete trace;
     delete skew;
     return 0;
 }
