@@ -128,7 +128,7 @@ module scheduler #(
     end
 
     // assign done_load_wire = done_load;
-    assign done = (cycle_count < ((2*MATRIX_SIZE - 1) * 4 + MATRIX_SIZE + 4)) ? 0 : 1;
+    assign done = (cycle_count < ((2*MATRIX_SIZE) * 4 + MATRIX_SIZE + 4)) ? 0 : 1;
     assign enable_mult = (cycle_count < ((2*MATRIX_SIZE - 1) * 4 + MATRIX_SIZE) && general_enable) ? {MATRIX_SIZE{1'b1}} : {MATRIX_SIZE{1'b0}};
     assign load_weight = (general_enable && (cycle_count < MATRIX_SIZE)) ? {MATRIX_SIZE{1'b1}} : {MATRIX_SIZE{1'b0}};
     
