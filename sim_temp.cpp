@@ -6,11 +6,11 @@
 
 uint64_t timestamp = 0;
 
-#define RUN_CYCLES 150
+#define RUN_CYCLES 500
 
 #define CLOCK_PERIOD 5
 
-#define RESET_TIME 20
+#define RESET_TIME 10
 
 int main(int argc, char **argv, char **env)
 {
@@ -98,12 +98,13 @@ int main(int argc, char **argv, char **env)
             systolic_array_frame_temp->data_input[1] = 0;
         }
 
-        // // Cycle 12
-        // if (timestamp == 120)
-        // {
-        //     systolic_array_frame_temp->data_input[0] = 0;
-        //     systolic_array_frame_temp->data_input[1] = 0;
-        // }
+        // comment this out after making sure that skewer is functional
+        // Cycle 13
+        if (timestamp == 130)
+        {
+            systolic_array_frame_temp->data_input[0] = 5;
+            systolic_array_frame_temp->data_input[1] = 6;
+        }
 
         systolic_array_frame_temp->eval();
         trace->dump(timestamp);
