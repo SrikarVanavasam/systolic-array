@@ -29,6 +29,7 @@ int main(int argc, char **argv, char **env)
             {
                 std::cout << "Cycle: " << timestamp / (CLOCK_PERIOD * 2) << " Out: ";
                 printf("%d \n", sched->load_weight);
+                printf("%d \n", sched->done);
             }
         }
         if (timestamp < RESET_TIME)
