@@ -6,7 +6,7 @@
 
 uint64_t timestamp = 0;
 
-#define RUN_CYCLES 200
+#define RUN_CYCLES 250
 
 #define CLOCK_PERIOD 5
 
@@ -58,15 +58,15 @@ int main(int argc, char **argv, char **env)
             systolic_array->load_weight = 1;
             systolic_array->enable = 1;
 
-            systolic_array->in_weights[0] = 1;
-            systolic_array->in_weights[1] = 3;
+            systolic_array->in_weights[0] = 2;
+            systolic_array->in_weights[1] = 4;
         }
         // Cycle 1
         if (timestamp == 20)
         {
 
-            systolic_array->in_weights[0] = 2;
-            systolic_array->in_weights[1] = 4;
+            systolic_array->in_weights[0] = 1;
+            systolic_array->in_weights[1] = 3;
         }
         // Finished loading weights
 
@@ -76,27 +76,28 @@ int main(int argc, char **argv, char **env)
         {
             // Turn off load weight signal
             systolic_array->load_weight = 0;
-
+            systolic_array->in_weights[0] = 0;
+            systolic_array->in_weights[1] = 0;
             systolic_array->in_data[0] = 1;
             systolic_array->in_data[1] = 0;
         }
 
         // Cycle 6
-        if (timestamp == 40)
+        if (timestamp == 70)
         {
             systolic_array->in_data[0] = 2;
             systolic_array->in_data[1] = 3;
         }
 
         // Cycle 10
-        if (timestamp == 50)
+        if (timestamp == 110)
         {
             systolic_array->in_data[0] = 0;
             systolic_array->in_data[1] = 4;
         }
 
         // Cycle 14
-        if (timestamp == 60)
+        if (timestamp == 150)
         {
             systolic_array->in_data[0] = 0;
             systolic_array->in_data[1] = 0;

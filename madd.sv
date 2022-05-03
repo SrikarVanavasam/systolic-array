@@ -14,7 +14,7 @@ module madd #(
                     .WIDTHB(DATA_SIZE), 
                     .WIDTHP(DATA_SIZE), 
                     .SIGNED(1), 
-                    .LATENCY(MULTIPLY_CYCLES)) 
+                    .LATENCY(MULTIPLY_CYCLES+1)) 
                     multiplier (.clk(clk), .enable(enable), .dataa(dataa), .datab(datab), .result(mult_out));
     VX_shift_register #(.DATAW(DATA_SIZE), .RESETW(0), .DEPTH(MULTIPLY_CYCLES), .NTAPS(1))
                     shift_reg (.clk(clk), .reset(reset), .enable(enable), .data_in(datac), .data_out(add_out));

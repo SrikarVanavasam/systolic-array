@@ -43,7 +43,7 @@ default:
 
 pe:
 	@echo "-- VERILATE & BUILD --------"
-	$(VERILATOR) -cc --exe -sv systolic_pe.sv madd.sv VX_multiplier.sv VX_shift_register.sv sim_pe.cpp
+	$(VERILATOR) -cc --exe --trace -sv systolic_pe.sv madd.sv VX_multiplier.sv VX_shift_register.sv sim_pe.cpp
 	@echo "-- COMPILE -----------------"
 	$(MAKE) -j 4 -C obj_dir -f Vsystolic_pe.mk 
 	@echo "-- RUN ---------------------"

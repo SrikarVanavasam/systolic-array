@@ -1,5 +1,6 @@
 #include <iostream>
 #include "verilated.h"
+#include <verilated_vcd_c.h>
 #include "Vsystolic_pe.h"
 #include "Vsystolic_pe__Syms.h"
 
@@ -14,6 +15,11 @@ uint64_t timestamp = 0;
 int main(int argc, char **argv, char **env)
 {
     Vsystolic_pe *pe = new Vsystolic_pe;
+
+    Verilated::traceEverOn(true);
+    auto trace = new VerilatedVcdC();
+    pe->trace(trace, 2999);
+    trace->open("trace.vcd");
     while (timestamp < RUN_CYCLES)
     {
         if (!(timestamp % CLOCK_PERIOD))
@@ -64,10 +70,13 @@ int main(int argc, char **argv, char **env)
         }
 
         pe->eval();
+        trace->dump(timestamp);
         timestamp++;
     }
     int final_sum = pe->out_sum;
     pe->final();
+    trace->close();
+    delete trace;
     delete pe;
     std::cout << "Final Sum: " << final_sum << std::endl;
     return 0;
