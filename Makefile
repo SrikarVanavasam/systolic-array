@@ -61,7 +61,7 @@ pe:
 
 skew:
 	@echo "-- VERILATE & BUILD --------"
-	$(VERILATOR) -cc --exe -sv input_skewer.sv VX_shift_register.sv sim_skew.cpp
+	$(VERILATOR) -cc --exe --trace -sv input_skewer.sv VX_shift_register.sv sim_skew.cpp
 	@echo "-- COMPILE -----------------"
 	$(MAKE) -j 4 -C obj_dir -f Vinput_skewer.mk 
 	@echo "-- RUN ---------------------"
@@ -84,6 +84,15 @@ array:
 	$(MAKE) -j 4 -C obj_dir -f Vsystolic_array.mk 
 	@echo "-- RUN ---------------------"
 	obj_dir/Vsystolic_array
+	@echo "-- DONE --------------------"
+
+data_fetcher:
+	@echo "-- VERILATE & BUILD --------"
+	$(VERILATOR) -cc --trace --exe -sv data_fetcher.sv sim_data_fetcher.cpp
+	@echo "-- COMPILE -----------------"
+	$(MAKE) -j 4 -C obj_dir -f Vdata_fetcher.mk 
+	@echo "-- RUN ---------------------"
+	obj_dir/Vdata_fetcher
 	@echo "-- DONE --------------------"
 
 ######################################################################
