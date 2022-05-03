@@ -37,7 +37,7 @@ int main(int argc, char **argv, char **env)
         else
         {
             systolic_array_frame_temp->reset = 0; // Deassert reset
-            systolic_array_frame_temp->enable = 0;
+            systolic_array_frame_temp->enable = 1;
             systolic_array_frame_temp->input_ready = 1;
             systolic_array_frame_temp->output_ready = 1;
         }
@@ -70,16 +70,19 @@ int main(int argc, char **argv, char **env)
 
             systolic_array_frame_temp->weights_input[0] = 2;
             systolic_array_frame_temp->weights_input[1] = 4;
+
+            systolic_array_frame_temp->data_input[0] = 1;
+            systolic_array_frame_temp->data_input[1] = 0;
         }
         // Finished loading weights
 
         // Start feeding inputs
         // Cycle 3
-        if (timestamp == 30)
-        {
-            // Turn off load weight signal
-            // systolic_array_frame_temp->load_weight = 0;
-        }
+        // if (timestamp == 30)
+        // {
+        //     // Turn off load weight signal
+        //     // systolic_array_frame_temp->load_weight = 0;
+        // }
 
         // Cycle 4
         if (timestamp == 40)

@@ -40,7 +40,7 @@ input_skewer #(.MATRIX_SIZE(MATRIX_SIZE), .DATA_SIZE(DATA_SIZE))
 my_input_skewer (
     .reset(reset),
     .clk(clk),
-    .enable_in(done_load),  // once loading is finished, start skewing the input
+    .enable_in(enable_schdeuler),  // once loading is finished, start skewing the input
     .data(data_input),
     .data_skewed(data_skewed_out)
 );
