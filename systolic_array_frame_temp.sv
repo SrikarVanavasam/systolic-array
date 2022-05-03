@@ -19,7 +19,7 @@ module systolic_array_frame
 
 wire [DATA_SIZE-1:0] data_skewed_out [MATRIX_SIZE-1:0];
 wire [MATRIX_SIZE-1:0] load_weight;
-wire [MATRIX_SIZE-1:0] enable_mult;
+wire [MATRIX_SIZE-1:0] enable_grid;
 wire done_load;
 wire enable_schdeuler;
 reg module_ready_reg;
@@ -51,7 +51,7 @@ my_scheduler (
     .clk(clk),
     .general_enable(enable_schdeuler),
     .load_weight(load_weight),
-    .enable_mult(enable_mult),
+    .enable_mult(enable_grid),
     .done_load_wire(done_load),
     .done(finished)
 );
@@ -64,7 +64,7 @@ my_systolic_array (
     .in_data(data_skewed_out),
     .in_weights(weights_input),
     .load_weight(load_weight),
-    .enable_mult(enable_mult),
+    .enable(enable_grid),
     .out_sum(result_out)
 );
 

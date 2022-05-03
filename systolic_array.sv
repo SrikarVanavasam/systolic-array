@@ -5,8 +5,8 @@ module systolic_array
 (
     input logic [DATA_SIZE-1:0] in_data [MATRIX_SIZE-1:0],
     input logic [DATA_SIZE-1:0] in_weights [MATRIX_SIZE-1:0],
-    input logic [MATRIX_SIZE-1:0] load_weight,          // from scheduler
-    input logic [MATRIX_SIZE-1:0] enable_mult ,         // from scheduler
+    input logic load_weight,            // from scheduler
+    input logic enable,                 // from scheduler
     input logic reset, clk,
     output logic [DATA_SIZE-1:0] out_sum [MATRIX_SIZE-1:0]
 );
@@ -20,14 +20,14 @@ logic [DATA_SIZE-1:0] col_wire [MATRIX_SIZE*MATRIX_SIZE-1:0];
 logic ld_weight [MATRIX_SIZE-1:0];
 logic PE_enable [MATRIX_SIZE-1:0];
 
-genvar h;
-generate
-    for (h = 0; h < MATRIX_SIZE; h++)
-    begin
-        assign ld_weight[h] = load_weight[h];
-        assign PE_enable[h] = enable_mult[h];
-    end
-endgenerate
+// genvar h;
+// generate
+//     for (h = 0; h < MATRIX_SIZE; h++)
+//     begin
+//         assign ld_weight[h] = load_weight[h];
+//         assign PE_enable[h] = enable_mult[h];
+//     end
+// endgenerate
 
 genvar i, j;    //i: row index; j: col index
 generate
@@ -56,8 +56,8 @@ generate
                                 // .ld_weight_out(ld_weight_wire[out_data_wire_index]),
                                 // .enable_in(PE_enable_wire[in_data_wire_index]),
                                 // .enable_out(PE_enable_wire[out_data_wire_index]),
-                                .enable(PE_enable[i]),
-                                .ld_weight(ld_weight[i]));
+                                .enable(enable),
+                                .ld_weight(load_weight));
         end
     end
 
@@ -84,8 +84,8 @@ generate
                             // .ld_weight_out(ld_weight_wire[out_data_wire_index]),
                             // .enable_in(PE_enable_wire[in_data_wire_index]),
                             // .enable_out(PE_enable_wire[out_data_wire_index]),
-                            .enable(PE_enable[0]),
-                            .ld_weight(ld_weight[0]));
+                            .enable(enable),
+                            .ld_weight(load_weight));
     end
 
     // PE_3:
@@ -110,8 +110,8 @@ generate
                             // .ld_weight_out(ld_weight_wire[out_data_wire_index]),
                             // .enable_in(PE_enable[i]),
                             // .enable_out(PE_enable_wire[out_data_wire_index]),       
-                            .enable(PE_enable[i]),
-                            .ld_weight(ld_weight[i]));
+                            .enable(enable),
+                            .ld_weight(load_weight));
     end
 
     // PE_4:
@@ -126,8 +126,8 @@ generate
                         // .ld_weight_out(ld_weight_wire[0]),
                         // .enable_in(PE_enable[0]),
                         // .enable_out(PE_enable_wire[0]),
-                        .enable(PE_enable[0]),
-                        .ld_weight(ld_weight[0]));
+                        .enable(enable),
+                        .ld_weight(load_weight));
     
     // Map column wires to output
     for (j = 0; j < MATRIX_SIZE; j++)
