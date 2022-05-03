@@ -62,7 +62,7 @@ int main(int argc, char **argv, char **env)
             systolic_array_frame_temp->weights_input[1] = 3;
 
             systolic_array_frame_temp->data_input[0] = 1;
-            systolic_array_frame_temp->data_input[1] = 0;
+            systolic_array_frame_temp->data_input[1] = 3;
         }
         // Cycle 2
         if (timestamp == 20)
@@ -72,7 +72,7 @@ int main(int argc, char **argv, char **env)
             systolic_array_frame_temp->weights_input[1] = 4;
 
             systolic_array_frame_temp->data_input[0] = 1;
-            systolic_array_frame_temp->data_input[1] = 0;
+            systolic_array_frame_temp->data_input[1] = 3;
         }
         // Finished loading weights
 
@@ -84,26 +84,26 @@ int main(int argc, char **argv, char **env)
         //     // systolic_array_frame_temp->load_weight = 0;
         // }
 
-        // Cycle 4
-        if (timestamp == 40)
+        // Cycle 5
+        if (timestamp == 50)
         {
             systolic_array_frame_temp->data_input[0] = 2;
-            systolic_array_frame_temp->data_input[1] = 3;
-        }
-
-        // Cycle 8
-        if (timestamp == 80)
-        {
-            systolic_array_frame_temp->data_input[0] = 0;
             systolic_array_frame_temp->data_input[1] = 4;
         }
 
-        // Cycle 12
-        if (timestamp == 120)
+        // Cycle 9
+        if (timestamp == 90)
         {
             systolic_array_frame_temp->data_input[0] = 0;
             systolic_array_frame_temp->data_input[1] = 0;
         }
+
+        // // Cycle 12
+        // if (timestamp == 120)
+        // {
+        //     systolic_array_frame_temp->data_input[0] = 0;
+        //     systolic_array_frame_temp->data_input[1] = 0;
+        // }
 
         systolic_array_frame_temp->eval();
         trace->dump(timestamp);
