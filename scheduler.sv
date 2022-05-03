@@ -4,7 +4,7 @@ module scheduler #(
 ) (
     input wire clk, reset, general_enable, 
     output wire [MATRIX_SIZE-1:0] load_weight,     // each bit controls one row
-    output wire [MATRIX_SIZE-1:0] enable_mult,     // each bit controls one row
+    // output wire [MATRIX_SIZE-1:0] enable_mult,     // each bit controls one row
     // output wire done_load_wire,
     output wire done
 );
@@ -51,8 +51,8 @@ module scheduler #(
     end
 
     always @ (posedge clk) begin
-        if (done_next == 0) begin
-            if (done_load == 1 && mult_counter[1:0] == 2'b00) begin        // every 4 cycles, enable another row of PE
+        if (done_next == 0 && done_load == 1) begin
+            if (mult_counter[1:0] == 2'b00) begin        // every 4 cycles, enable another row of PE
                 enable_mult_next = {1'b1, {MATRIX_SIZE-1{1'b0}}} | (enable_mult>>1);     // adding a 1 to the MSB
                 mult_counter += 1;
             end
@@ -89,7 +89,7 @@ module scheduler #(
 
     // assign done_load_wire = done_load;
     assign done = done_reg;
-    assign enable_mult = enable_mult_reg;
+    // assign enable_mult = enable_mult_reg;
     assign load_weight = load_weight_reg;
     
 endmodule

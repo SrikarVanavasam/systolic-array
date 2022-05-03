@@ -28,7 +28,7 @@ int main(int argc, char **argv, char **env)
             if (sched->clk)
             {
                 std::cout << "Cycle: " << timestamp / (CLOCK_PERIOD * 2) << " Out: ";
-                printf("%d \n", sched->enable_mult);
+                printf("%d \n", sched->load_weight);
             }
         }
         if (timestamp < RESET_TIME)
