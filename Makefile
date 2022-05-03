@@ -41,6 +41,15 @@ default:
 	obj_dir/Vsystolic_array_frame
 	@echo "-- DONE --------------------"
 
+temp:
+	@echo "-- VERILATE & BUILD --------"
+	$(VERILATOR) -cc --trace --exe -sv systolic_array_frame_temp.sv systolic_array.sv scheduler.sv input_skewer.sv systolic_pe.sv madd.sv VX_multiplier.sv VX_shift_register.sv sim_temp.cpp
+	@echo "-- COMPILE -----------------"
+	$(MAKE) -j 4 -C obj_dir -f Vsystolic_array_frame_temp.mk 
+	@echo "-- RUN ---------------------"
+	obj_dir/Vsystolic_array_frame_temp
+	@echo "-- DONE --------------------"
+
 pe:
 	@echo "-- VERILATE & BUILD --------"
 	$(VERILATOR) -cc --exe --trace -sv systolic_pe.sv madd.sv VX_multiplier.sv VX_shift_register.sv sim_pe.cpp

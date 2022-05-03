@@ -82,10 +82,9 @@ module scheduler #(
             // load_weight <= 0;
         end
         else if (general_enable) begin
-
-            done_reg <= done_next;
-            enable_mult_reg <= enable_mult_next;
-            load_weight_reg <= load_weight_next;
+            done_reg = done_next;
+            enable_mult_reg = enable_mult_next;
+            load_weight_reg = load_weight_next;
         end
     end
 
