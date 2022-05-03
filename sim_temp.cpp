@@ -78,11 +78,13 @@ int main(int argc, char **argv, char **env)
 
         // Start feeding inputs
         // Cycle 3
-        // if (timestamp == 30)
-        // {
-        //     // Turn off load weight signal
-        //     // systolic_array_frame_temp->load_weight = 0;
-        // }
+        if (timestamp == 30)
+        {
+            // Turn off load weight signal
+            // systolic_array_frame_temp->load_weight = 0;
+            systolic_array_frame_temp->weights_input[0] = 0;
+            systolic_array_frame_temp->weights_input[1] = 0;
+        }
 
         // Cycle 5
         if (timestamp == 50)

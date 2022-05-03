@@ -12,6 +12,7 @@ module scheduler #(
     // internal signals
     reg[MATRIX_SIZE:0] load_counter;
     reg[MATRIX_SIZE+2 : 0] mult_counter;
+    reg[MATRIX_SIZE+2 : 0] cycle_count;
     reg done_load;      // internal signal that indicates loading is finished
     reg done_next;
     
@@ -71,32 +72,38 @@ module scheduler #(
     //     end
     // end
 
-    always @ (posedge clk) begin
-        if (general_enable) begin
-            if (load_counter < MATRIX_SIZE + 1)
-            begin
-                load_weight_reg = {MATRIX_SIZE{1'b1}};
-                load_counter += 1;
-                enable_mult_reg = 1;
-            end
-            else begin
-                load_weight_reg = {MATRIX_SIZE{1'b0}};
-                done_load = 1;
-            end
-        end 
-    end
+    // always @ (posedge clk) begin
+    //     if (general_enable) begin
+    //         if (load_counter < MATRIX_SIZE)
+    //         begin
+    //             load_weight_reg = {MATRIX_SIZE{1'b1}};
+    //             load_counter += 1;
+    //             enable_mult_reg = 1;
+    //         end
+    //         else begin
+    //             load_weight_reg = {MATRIX_SIZE{1'b0}};
+    //             done_load = 1;
+    //         end
+    //     end 
+    // end
+
+    // always @ (posedge clk) begin
+    //     if (general_enable) begin
+    //         if (done_next == 0 && done_load == 1) begin
+    //             enable_mult_reg = {MATRIX_SIZE{1'b1}};
+    //             mult_counter += 1;
+
+    //             if (mult_counter > ((2*MATRIX_SIZE - 1) * 4)) begin        // need (2n-1)*4 cycles to finish up all the operations 
+    //                 done_next = 1;
+    //                 enable_mult_reg = {MATRIX_SIZE{1'b0}};
+    //             end
+    //         end
+    //     end
+    // end
 
     always @ (posedge clk) begin
         if (general_enable) begin
-            if (done_next == 0 && done_load == 1) begin
-                enable_mult_reg = {MATRIX_SIZE{1'b1}};
-                mult_counter += 1;
-
-                if (mult_counter > ((2*MATRIX_SIZE - 1) * 4)) begin        // need (2n-1)*4 cycles to finish up all the operations 
-                    done_next = 1;
-                    enable_mult_reg = {MATRIX_SIZE{1'b0}};
-                end
-            end
+            cycle_count += 1;
         end
     end
 
@@ -108,6 +115,7 @@ module scheduler #(
             mult_counter = 0;
             done_load = 0;
             done_next = 0;
+            cycle_count = 0;
             // done <= 0;
             // enable_mult <= 0;
             // load_weight <= 0;
@@ -120,8 +128,8 @@ module scheduler #(
     end
 
     // assign done_load_wire = done_load;
-    assign done = done_reg;
-    assign enable_mult = enable_mult_reg;
-    assign load_weight = load_weight_reg;
+    assign done = (cycle_count < ((2*MATRIX_SIZE - 1) * 4 + MATRIX_SIZE + 4)) ? 0 : 1;
+    assign enable_mult = (cycle_count < ((2*MATRIX_SIZE - 1) * 4 + MATRIX_SIZE) && general_enable) ? {MATRIX_SIZE{1'b1}} : {MATRIX_SIZE{1'b0}};
+    assign load_weight = (general_enable && (cycle_count < MATRIX_SIZE)) ? {MATRIX_SIZE{1'b1}} : {MATRIX_SIZE{1'b0}};
     
 endmodule
