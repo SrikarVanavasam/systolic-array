@@ -42,7 +42,7 @@ my_systolic_array (
     .in_data(data_skewed_out),
     .in_weights(weights_input),
     .load_weight(load_weight),
-    .enable_mult(enable_mult),
+    .enable(enable_mult),
     .out_sum(result_out)
 );
 

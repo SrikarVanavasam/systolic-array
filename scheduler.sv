@@ -4,7 +4,7 @@ module scheduler #(
 ) (
     input wire clk, reset, general_enable, 
     output wire [MATRIX_SIZE-1:0] load_weight,     // each bit controls one row
-    // output wire [MATRIX_SIZE-1:0] enable_mult,     // each bit controls one row
+    output wire [MATRIX_SIZE-1:0] enable_mult,     // each bit controls one row
     // output wire done_load_wire,
     output wire done
 );
@@ -45,8 +45,9 @@ module scheduler #(
                 //load_weight_next = {0, (MATRIX_SIZE-1){1'b1}}
                 load_weight_next = {MATRIX_SIZE{1'b1}};
                 done_load = 1;
-                //enable_mult = {1'b1, MATRIX_SIZE{1'b0}};    // once the last row is loaded, start multplying
+                // enable_mult = {1'b1, MATRIX_SIZE{1'b0}};    // once the last row is loaded, start multplying
             end
+            enable_mult_reg = {MATRIX_SIZE{1'b1}};    // enabling the whole systolic array
         end
     end
 
@@ -63,14 +64,15 @@ module scheduler #(
             
             if (mult_counter >= ((2*MATRIX_SIZE - 1) * 4)) begin        // need (2n-1)*4 cycles to finish up all the operations 
                 done_next = 1;
+                enable_mult_next <= {MATRIX_SIZE{1'b0}};
             end
         end
     end
 
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-            load_weight_next = {MATRIX_SIZE{1'b0}};
-            enable_mult_next = {MATRIX_SIZE{1'b0}};
+            load_weight_reg = {MATRIX_SIZE{1'b0}};
+            enable_mult_reg = {MATRIX_SIZE{1'b0}};
             load_counter = 0;
             mult_counter = 0;
             done_load = 0;
@@ -89,7 +91,7 @@ module scheduler #(
 
     // assign done_load_wire = done_load;
     assign done = done_reg;
-    // assign enable_mult = enable_mult_reg;
+    assign enable_mult = enable_mult_reg;
     assign load_weight = load_weight_reg;
     
 endmodule
