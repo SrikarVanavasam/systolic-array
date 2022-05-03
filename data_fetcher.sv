@@ -9,36 +9,78 @@ module data_fetcher
 reg [DATA_SIZE-1:0] data_w_interval [MATRIX_SIZE-1:0];
 
 reg [DATA_SIZE-1:0] dmem [MATRIX_SIZE * MATRIX_SIZE-1:0];
+wire [DATA_SIZE-1:0] dmem_out [MATRIX_SIZE * MATRIX_SIZE-1:0];
 
 reg [1:0] counter;
 reg [31:0] pointer;
 
-initial begin
-      $readmemh(`IDMEMINITFILE , dmem);
-      counter <= 0;
-      pointer <= MATRIX_SIZE - 1;
-end
+// initial begin
+//       assign dmem [0] = 0;
+//       assign dmem [1] = 1;
+//       assign dmem [2] = 2;
+//       assign dmem [3] = 3;
+//     //   assign dmem_out [0] = dmem [0];
+//     //   assign dmem_out [1] = dmem [1];
+//     //   assign dmem_out [2] = dmem [2];
+//     //   assign dmem_out [3] = dmem [3];
+//       assign counter = 0;
+//       assign pointer = 0;
+// end
 
 always @ (posedge clk or posedge reset) begin
-    if (reset or !enable) begin
-        data_w_interval [MATRIX_SIZE-1:0] <= 0;
+    if (reset || !enable) begin
+        for (int i = 0; i < MATRIX_SIZE; i++) begin
+            data_w_interval [i] <= 32'b0;
+        end
         counter <= 0;
-        pointer <= MATRIX_SIZE - 1;
+        pointer <= 0;
+
+        dmem [0] <= 1;
+        dmem [1] <= 2;
+        dmem [2] <= 3;
+        dmem [3] <= 4;
+    end
+    else if (pointer > MATRIX_SIZE*MATRIX_SIZE - MATRIX_SIZE) begin
+        for (int i = 0; i < MATRIX_SIZE; i++) begin
+            data_w_interval [i] <= 32'b0;
+        end
+        counter <= 0;
+        pointer <= MATRIX_SIZE*MATRIX_SIZE;
     end
     else begin
         counter <= counter + 1;
     end
-end 
 
-always @ (counter) begin
     if (counter == 2'b11) begin
-        data_w_interval [MATRIX_SIZE-1:0] <= dmem [pointer:pointer-MATRIX_SIZE];
+        // data_w_interval [MATRIX_SIZE-1:0] <= dmem_out [pointer +: MATRIX_SIZE];
+        for (int i = 0; i < MATRIX_SIZE; i++) begin
+            data_w_interval [i] <= dmem [pointer + i];
+        end
         pointer <= pointer + MATRIX_SIZE;   // should we use blocking statement for updating the pointer value?
     end
     else begin
-        data_w_interval [MATRIX_SIZE-1:0] <= 0;
+        for (int i = 0; i < MATRIX_SIZE; i++) begin
+            data_w_interval [i] <= 32'b0;
+        end
     end
-end
+
+
+end 
+
+// always @ (posedge clk) begin
+//     if (counter == 2'b11) begin
+//         // data_w_interval [MATRIX_SIZE-1:0] <= dmem_out [pointer +: MATRIX_SIZE];
+//         for (int i = 0; i < MATRIX_SIZE; i++) begin
+//             data_w_interval [i] <= dmem [pointer + i];
+//         end
+//         pointer <= pointer + MATRIX_SIZE;   // should we use blocking statement for updating the pointer value?
+//     end
+//     else begin
+//         for (int i = 0; i < MATRIX_SIZE; i++) begin
+//             data_w_interval [i] <= 32'b0;
+//         end
+//     end
+// end
 
 assign data_w_interval_out = data_w_interval;
 

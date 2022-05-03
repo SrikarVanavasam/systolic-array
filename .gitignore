@@ -1,1 +1,4 @@
 .vscode
+
+obj_dir/
+*.vcd
