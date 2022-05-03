@@ -40,7 +40,7 @@ input_skewer #(.MATRIX_SIZE(MATRIX_SIZE), .DATA_SIZE(DATA_SIZE))
 my_input_skewer (
     .reset(reset),
     .clk(clk),
-    .enable_in(done_load),  // once loading is finished, start skewing the input
+    .enable_in(enable_schdeuler),  // once loading is finished, start skewing the input
     .data(data_input),
     .data_skewed(data_skewed_out)
 );
@@ -52,7 +52,7 @@ my_scheduler (
     .general_enable(enable_schdeuler),
     .load_weight(load_weight),
     .enable_mult(enable_grid),
-    .done_load_wire(done_load),
+    //.done_load_wire(done_load),
     .done(finished)
 );
 
@@ -63,8 +63,8 @@ my_systolic_array (
     .clk(clk),
     .in_data(data_skewed_out),
     .in_weights(weights_input),
-    .load_weight(load_weight),
-    .enable(enable_grid),
+    .load_weight(load_weight[0]),
+    .enable(enable_grid[0]),
     .out_sum(result_out)
 );
 
