@@ -1,8 +1,8 @@
 #include <iostream>
 #include "verilated.h"
 #include <verilated_vcd_c.h>
-#include "Vsystolic_array_frame.h"
-#include "Vsystolic_array_frame__Syms.h"
+#include "Vsystolic_array.h"
+#include "Vsystolic_array_Syms.h"
 
 uint64_t timestamp = 0;
 
@@ -24,10 +24,10 @@ int main(int argc, char **argv, char **env)
     {
         if (!(timestamp % CLOCK_PERIOD))
         {
-            systolic_array_frame->clk = !systolic_array_frame->clk;
-            if (systolic_array_frame->clk)
+            systolic_array->clk = !systolic_array->clk;
+            if (systolic_array->clk)
             {
-                std::cout << "Cycle: " << timestamp / (CLOCK_PERIOD * 2) << " Out: " << systolic_array_frame->result_out[0] << " " << systolic_array_frame->result_out[1] << std::endl;
+                std::cout << "Cycle: " << timestamp / (CLOCK_PERIOD * 2) << " Out: " << systolic_array->out_sum[0] << " " << systolic_array->out_sum[1] << std::endl;
             }
         }
         // if (timestamp < RESET_TIME)
@@ -97,7 +97,14 @@ int main(int argc, char **argv, char **env)
             systolic_array->in_data[1] = 4;
         }
 
-        systolic_array_frame->eval();
+        // Cycle 14
+        if (timestamp == 60)
+        {            
+            systolic_array->in_data[0] = 0;
+            systolic_array->in_data[1] = 0;
+        }
+
+        systolic_array->eval();
         trace->dump(timestamp);
         timestamp++;
     }
