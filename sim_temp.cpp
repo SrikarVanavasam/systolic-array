@@ -58,8 +58,8 @@ int main(int argc, char **argv, char **env)
             // systolic_array_frame_temp->load_weight = 1;
             systolic_array_frame_temp->enable = 1;
 
-            systolic_array_frame_temp->weights_input[0] = 1;
-            systolic_array_frame_temp->weights_input[1] = 3;
+            systolic_array_frame_temp->weights_input[0] = 2;
+            systolic_array_frame_temp->weights_input[1] = 4;
 
             systolic_array_frame_temp->data_input[0] = 1;
             systolic_array_frame_temp->data_input[1] = 3;
@@ -68,8 +68,8 @@ int main(int argc, char **argv, char **env)
         if (timestamp == 20)
         {
 
-            systolic_array_frame_temp->weights_input[0] = 2;
-            systolic_array_frame_temp->weights_input[1] = 4;
+            systolic_array_frame_temp->weights_input[0] = 1;
+            systolic_array_frame_temp->weights_input[1] = 3;
 
             systolic_array_frame_temp->data_input[0] = 1;
             systolic_array_frame_temp->data_input[1] = 3;
@@ -100,11 +100,11 @@ int main(int argc, char **argv, char **env)
 
         // comment this out after making sure that skewer is functional
         // Cycle 13
-        if (timestamp == 130)
-        {
-            systolic_array_frame_temp->data_input[0] = 5;
-            systolic_array_frame_temp->data_input[1] = 6;
-        }
+        // if (timestamp == 130)
+        // {
+        //     systolic_array_frame_temp->data_input[0] = 5;
+        //     systolic_array_frame_temp->data_input[1] = 6;
+        // }
 
         systolic_array_frame_temp->eval();
         trace->dump(timestamp);

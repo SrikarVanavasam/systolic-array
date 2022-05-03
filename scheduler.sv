@@ -32,39 +32,70 @@ module scheduler #(
     //     done_next = 0;
     // end
 
+    // always @ (posedge clk) begin
+    //     if (load_counter < MATRIX_SIZE)
+    //     begin
+    //         if (load_counter < MATRIX_SIZE-1)
+    //         begin
+    //             load_weight_reg = {MATRIX_SIZE{1'b1}};
+    //             load_counter += 1;
+    //         end
+    //         else 
+    //         begin   
+    //             //load_weight_next = {0, (MATRIX_SIZE-1){1'b1}}
+    //             load_weight_next <= {MATRIX_SIZE{1'b0}};
+    //             done_load = 1;
+    //             // enable_mult = {1'b1, MATRIX_SIZE{1'b0}};    // once the last row is loaded, start multplying
+    //         end
+    //         enable_mult_reg = {MATRIX_SIZE{1'b1}};    // enabling the whole systolic array
+    //     end
+    // end
+
+    // always @ (posedge clk) begin
+    //     if (done_next == 0 && done_load == 1 && !reset) begin
+    //         // if (mult_counter[1:0] == 2'b00) begin        // every 4 cycles, enable another row of PE
+    //         //     // enable_mult_next = {1'b1, {MATRIX_SIZE-1{1'b0}}} | (enable_mult>>1);     // adding a 1 to the MSB
+    //         //     mult_counter += 1;
+    //         // end
+    //         // else 
+    //         // begin
+    //         //     mult_counter += 1;
+    //         // end
+    //         enable_mult_reg = {MATRIX_SIZE{1'b1}};
+    //         mult_counter += 1;
+
+    //         if (mult_counter >= ((2*MATRIX_SIZE - 1) * 4)) begin        // need (2n-1)*4 cycles to finish up all the operations 
+    //             done_next = 1;
+    //             enable_mult_next <= {MATRIX_SIZE{1'b0}};
+    //         end
+    //     end
+    // end
+
     always @ (posedge clk) begin
-        if (load_counter < MATRIX_SIZE)
-        begin
-            if (load_counter < MATRIX_SIZE-1)
+        if (general_enable) begin
+            if (load_counter < MATRIX_SIZE + 1)
             begin
-                load_weight_next = {MATRIX_SIZE{1'b1}};
+                load_weight_reg = {MATRIX_SIZE{1'b1}};
                 load_counter += 1;
+                enable_mult_reg = 1;
             end
-            else 
-            begin   
-                //load_weight_next = {0, (MATRIX_SIZE-1){1'b1}}
-                load_weight_next = {MATRIX_SIZE{1'b1}};
+            else begin
+                load_weight_reg = {MATRIX_SIZE{1'b0}};
                 done_load = 1;
-                // enable_mult = {1'b1, MATRIX_SIZE{1'b0}};    // once the last row is loaded, start multplying
             end
-            enable_mult_reg = {MATRIX_SIZE{1'b1}};    // enabling the whole systolic array
-        end
+        end 
     end
 
     always @ (posedge clk) begin
-        if (done_next == 0 && done_load == 1) begin
-            if (mult_counter[1:0] == 2'b00) begin        // every 4 cycles, enable another row of PE
-                // enable_mult_next = {1'b1, {MATRIX_SIZE-1{1'b0}}} | (enable_mult>>1);     // adding a 1 to the MSB
+        if (general_enable) begin
+            if (done_next == 0 && done_load == 1) begin
+                enable_mult_reg = {MATRIX_SIZE{1'b1}};
                 mult_counter += 1;
-            end
-            else 
-            begin
-                mult_counter += 1;
-            end
-            
-            if (mult_counter >= ((2*MATRIX_SIZE - 1) * 4)) begin        // need (2n-1)*4 cycles to finish up all the operations 
-                done_next = 1;
-                enable_mult_next <= {MATRIX_SIZE{1'b0}};
+
+                if (mult_counter > ((2*MATRIX_SIZE - 1) * 4)) begin        // need (2n-1)*4 cycles to finish up all the operations 
+                    done_next = 1;
+                    enable_mult_reg = {MATRIX_SIZE{1'b0}};
+                end
             end
         end
     end
@@ -81,11 +112,11 @@ module scheduler #(
             // enable_mult <= 0;
             // load_weight <= 0;
         end
-        else if (general_enable) begin
-            done_reg = done_next;
-            enable_mult_reg = enable_mult_next;
-            load_weight_reg = load_weight_next;
-        end
+        // else if (general_enable) begin
+        //     done_reg <= done_next;
+        //     enable_mult_reg = enable_mult_next;
+        //     load_weight_reg = load_weight_next;
+        // end
     end
 
     // assign done_load_wire = done_load;

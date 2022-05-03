@@ -64,7 +64,7 @@ my_systolic_array (
     .in_data(data_skewed_out),
     .in_weights(weights_input),
     .load_weight(load_weight[0]),
-    .enable(enable_grid[0]),
+    .enable(enable_schdeuler),
     .out_sum(result_out)
 );
 
