@@ -29,11 +29,7 @@ generate
     for (i = 0; i < MATRIX_SIZE; i++)
     begin
         // shift registers will delay i cycles for ith row of input
-<<<<<<< Updated upstream
-        VX_shift_register   #(.DATAW(DATA_SIZE), .RESETW(0), .DEPTH(i + MATRIX_SIZE), .NTAPS(1))
-=======
         VX_shift_register   #(.DATAW(DATA_SIZE), .RESETW(0), .DEPTH(4*i + MATRIX_SIZE), .NTAPS(1))
->>>>>>> Stashed changes
 				            shift_reg (.clk(clk), .reset(reset), .enable(enable_in), .data_in(data[i]), .data_out(data_skewed[i]));
     end
 endgenerate
