@@ -71,8 +71,8 @@ int main(int argc, char **argv, char **env)
             systolic_array_frame_temp->weights_input[0] = 1;
             systolic_array_frame_temp->weights_input[1] = 3;
 
-            systolic_array_frame_temp->data_input[0] = 1;
-            systolic_array_frame_temp->data_input[1] = 3;
+            systolic_array_frame_temp->data_input[0] = 0;
+            systolic_array_frame_temp->data_input[1] = 0;
         }
         // Finished loading weights
 
@@ -94,7 +94,7 @@ int main(int argc, char **argv, char **env)
         }
 
         // Cycle 9
-        if (timestamp == 90)
+        if (timestamp == 60)
         {
             systolic_array_frame_temp->data_input[0] = 0;
             systolic_array_frame_temp->data_input[1] = 0;
