@@ -14,23 +14,11 @@ wire [DATA_SIZE-1:0] dmem_out [MATRIX_SIZE * MATRIX_SIZE-1:0];
 reg [1:0] counter;
 reg [31:0] pointer;
 
-// initial begin
-//       assign dmem [0] = 0;
-//       assign dmem [1] = 1;
-//       assign dmem [2] = 2;
-//       assign dmem [3] = 3;
-//     //   assign dmem_out [0] = dmem [0];
-//     //   assign dmem_out [1] = dmem [1];
-//     //   assign dmem_out [2] = dmem [2];
-//     //   assign dmem_out [3] = dmem [3];
-//       assign counter = 0;
-//       assign pointer = 0;
-// end
 
 always @ (posedge clk or posedge reset) begin
     if (reset || !enable) begin
         for (int i = 0; i < MATRIX_SIZE; i++) begin
-            data_w_interval[i] <= 32'b0;
+            assign data_w_interval[i] = 32'b0;
         end
         counter <= 0;
         pointer <= 0;
@@ -55,7 +43,7 @@ always @ (posedge clk or posedge reset) begin
         counter <= counter + 1;
     end
 
-    if (counter == 2'b11) begin
+    if (counter == 3) begin
         // data_w_interval [MATRIX_SIZE-1:0] <= dmem_out [pointer +: MATRIX_SIZE];
         for (int i = 0; i < MATRIX_SIZE; i++) begin
             data_w_interval[i] <= dmem[pointer + i];

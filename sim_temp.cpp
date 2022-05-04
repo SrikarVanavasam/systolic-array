@@ -27,7 +27,13 @@ int main(int argc, char **argv, char **env)
             systolic_array_frame_temp->clk = !systolic_array_frame_temp->clk;
             if (systolic_array_frame_temp->clk)
             {
-                std::cout << "Cycle: " << timestamp / (CLOCK_PERIOD * 2) << " Out: " << systolic_array_frame_temp->result_out[0] << " " << systolic_array_frame_temp->result_out[1] << std::endl;
+                std::cout << "Cycle: " << timestamp / (CLOCK_PERIOD * 2) << " | ";
+                std::cout << "Out: " << systolic_array_frame_temp->result_out[0] << " " << systolic_array_frame_temp->result_out[1] << " | ";
+                // std::cout << "input_ready: " << systolic_array_frame_temp->input_ready << " | ";
+                // std::cout << "output_ready: " << systolic_array_frame_temp->output_ready << " | ";
+                std::cout << "finished: " << int(systolic_array_frame_temp->finished) << " | ";
+                std::cout << "module_ready: " << int(systolic_array_frame_temp->module_ready) << std::endl;
+
             }
         }
         if (timestamp < RESET_TIME)
@@ -51,8 +57,21 @@ int main(int argc, char **argv, char **env)
          *  2, 1]
          *
          */
-               // Cycle 1
-        if (timestamp == 10)
+        if (timestamp == 50)
+        {
+            // All PEs are enabled during weights loading
+            // systolic_array_frame_temp->load_weight = 1;
+            systolic_array_frame_temp->enable = 0;
+
+            systolic_array_frame_temp->weights_input[0] = 0;
+            systolic_array_frame_temp->weights_input[1] = 0;
+
+            systolic_array_frame_temp->data_input[0] = 0;
+            systolic_array_frame_temp->data_input[1] = 0;
+        }
+
+        // Cycle 1 + 4
+        if (timestamp == 50)
         {
             // All PEs are enabled during weights loading
             // systolic_array_frame_temp->load_weight = 1;
@@ -64,8 +83,8 @@ int main(int argc, char **argv, char **env)
             systolic_array_frame_temp->data_input[0] = 1;
             systolic_array_frame_temp->data_input[1] = 3;
         }
-        // Cycle 2
-        if (timestamp == 20)
+        // Cycle 2 + 4
+        if (timestamp == 60)
         {
 
             systolic_array_frame_temp->weights_input[0] = 1;
@@ -77,8 +96,8 @@ int main(int argc, char **argv, char **env)
         // Finished loading weights
 
         // Start feeding inputs
-        // Cycle 3
-        if (timestamp == 30)
+        // Cycle 3 + 4
+        if (timestamp == 70)
         {
             // Turn off load weight signal
             // systolic_array_frame_temp->load_weight = 0;
@@ -86,15 +105,22 @@ int main(int argc, char **argv, char **env)
             systolic_array_frame_temp->weights_input[1] = 0;
         }
 
-        // Cycle 5
-        if (timestamp == 50)
+        // Cycle 5 + 4
+        if (timestamp == 90)
         {
             systolic_array_frame_temp->data_input[0] = 2;
             systolic_array_frame_temp->data_input[1] = 4;
         }
 
-        // Cycle 9
-        if (timestamp == 60)
+        // Cycle 6 + 4
+        if (timestamp == 100)
+        {
+            systolic_array_frame_temp->data_input[0] = 0;
+            systolic_array_frame_temp->data_input[1] = 0;
+        }
+
+        // Cycle 9 + 4
+        if (timestamp == 130)
         {
             systolic_array_frame_temp->data_input[0] = 0;
             systolic_array_frame_temp->data_input[1] = 0;
