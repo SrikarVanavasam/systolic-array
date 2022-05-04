@@ -6,6 +6,7 @@ module scheduler #(
     output wire load_weight,     // each bit controls one row
     output wire [MATRIX_SIZE-1:0] enable_mult,     // each bit controls one row
     // output wire done_load_wire,
+    output wire module_busy_out,
     output wire done
 );
     
@@ -21,6 +22,7 @@ module scheduler #(
     reg [MATRIX_SIZE-1:0] enable_mult_next;
     reg load_weight_reg;
     reg enable_mult_reg;
+    reg module_busy;
     reg done_reg;
 
     // initialize signals
@@ -104,8 +106,16 @@ module scheduler #(
     always @ (posedge clk) begin
         if (general_enable) begin
             cycle_count += 1;
+            if (!done)
+                module_busy <= 1;
+            else
+                module_busy <= 0;
         end
+        else
+            module_busy <= 0;
     end
+
+    assign module_busy_out = module_busy;
 
     always @(posedge clk or posedge reset) begin
         if (reset) begin
@@ -129,7 +139,7 @@ module scheduler #(
 
     // assign done_load_wire = done_load;
     assign done = (cycle_count < ((2*MATRIX_SIZE) * 4 + MATRIX_SIZE + 4)) ? 0 : 1;
-    assign enable_mult = (cycle_count < ((2*MATRIX_SIZE - 1) * 4 + MATRIX_SIZE) && general_enable) ? {MATRIX_SIZE{1'b1}} : {MATRIX_SIZE{1'b0}};
-    assign load_weight = (general_enable && (cycle_count < MATRIX_SIZE)) ? 1 : 0;
+    assign enable_mult = (cycle_count - 3 < ((2*MATRIX_SIZE - 1) * 4 + MATRIX_SIZE) && general_enable) ? {MATRIX_SIZE{1'b1}} : {MATRIX_SIZE{1'b0}};
+    assign load_weight = (general_enable && (cycle_count - 3 < MATRIX_SIZE)) ? 1 : 0;
     
 endmodule

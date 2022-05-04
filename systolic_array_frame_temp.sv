@@ -4,64 +4,39 @@ module systolic_array_frame
 
 (
     // input logic valid_in, 
-    input logic [DATA_SIZE-1:0] data_input [MATRIX_SIZE-1:0],
-    input logic [DATA_SIZE-1:0] weights_input [MATRIX_SIZE-1:0],
+    // input logic [DATA_SIZE-1:0] data_input [MATRIX_SIZE-1:0],
+    // input logic [DATA_SIZE-1:0] weights_input [MATRIX_SIZE-1:0],
     input logic clk, reset, enable,
     output logic [DATA_SIZE-1:0] result_out [MATRIX_SIZE-1:0],
-    output logic finished, 
+    output logic results_ready, 
+    output wire module_busy,
+    output wire module_ready,   // the module is ready to perform the operation
 
     // hanshake signals
-    input wire input_ready,    // input is ready from the other party
-    input wire output_ready,   // output taret is ready to store the result
-    // output wire result_ready,   // the module has done its operation (same as finished!!!)
-    output wire module_ready    // the module is ready to perform the operation
+    input wire valid_in,        // input is ready from the other party
+    input wire ready_out,       // output target is ready to store the result
+    output wire ready_in,       // ready to take in new data
+    output wire valid_out       // the results are valid and ready to be read
 );
 
 wire [DATA_SIZE-1:0] data_skewed_out [MATRIX_SIZE-1:0];
-wire load_weight;
 wire [MATRIX_SIZE-1:0] enable_grid;
-// wire [DATA_SIZE-1:0] data_input [MATRIX_SIZE-1:0];
+wire [DATA_SIZE-1:0] data_input [MATRIX_SIZE-1:0];
+wire [DATA_SIZE-1:0] weights_input [MATRIX_SIZE-1:0];
+wire load_weight;
 wire done_load;
 wire enable_schdeuler;
-// wire reset_delayed;
-// wire enable_delayed;
 reg module_ready_reg;
 
 
 // handshake implementation
 // process the input
-assign enable_schdeuler = enable && input_ready && output_ready;    // if input data is ready and 
-                                                                    // output storage is avaliable, operate
+assign enable_schdeuler = enable && valid_in;    // if input data is ready, operate
 
-// // shift register for reset
-// reg r_bit0;
-// reg r_bit1;
-// reg r_bit2;
-// reg r_bit3;
-
-// assign reset_delayed = r_bit3;
-
-// always @(posedge clk) begin
-//   r_bit3 <= r_bit2;
-//   r_bit2 <= r_bit1;
-//   r_bit1 <= r_bit0;
-//   r_bit0 <= reset;
-// end
-
-// // shift register for enable
-// reg e_bit0;
-// reg e_bit1;
-// reg e_bit2;
-// reg e_bit3;
-
-// assign enable_delayed = e_bit3;
-
-// always @(posedge clk) begin
-//   e_bit3 <= e_bit2;
-//   e_bit2 <= e_bit1;
-//   e_bit1 <= e_bit0;
-//   e_bit0 <= enable;
-// end
+always @(ready_out) begin
+    assign ready_in = (!module_busy) && ready_out;
+    assign valid_out = results_ready && (!ready_out);
+end
 
 // process the output
 always @ (reset) begin
@@ -69,13 +44,22 @@ always @ (reset) begin
 end
 assign module_ready = module_ready_reg;
 
-// data_fetcher #(.MATRIX_SIZE(MATRIX_SIZE), .DATA_SIZE(DATA_SIZE))   
-// my_data_fetcher (
-//     .reset(reset),
-//     .clk(clk),
-//     .enable(enable),
-//     .data_w_interval_out(data_input)
-// );
+weight_buffer #(.MATRIX_SIZE(MATRIX_SIZE), .DATA_SIZE(DATA_SIZE))   
+my_weight_buffer (
+    .reset(reset),
+    .clk(clk),
+    .enable(enable),
+    .data_out(weights_input)
+);
+
+
+data_fetcher #(.MATRIX_SIZE(MATRIX_SIZE), .DATA_SIZE(DATA_SIZE))   
+my_data_fetcher (
+    .reset(reset),
+    .clk(clk),
+    .enable(enable),
+    .data_w_interval_out(data_input)
+);
 
 
 input_skewer #(.MATRIX_SIZE(MATRIX_SIZE), .DATA_SIZE(DATA_SIZE))   
@@ -95,7 +79,8 @@ my_scheduler (
     .load_weight(load_weight),
     .enable_mult(enable_grid),
     //.done_load_wire(done_load),
-    .done(finished)
+    .module_busy_out(module_busy),
+    .done(results_ready)
 );
 
 systolic_array #(.MATRIX_SIZE(MATRIX_SIZE), .DATA_SIZE(DATA_SIZE))

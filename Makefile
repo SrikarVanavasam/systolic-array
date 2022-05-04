@@ -43,7 +43,7 @@ default:
 
 temp:
 	@echo "-- VERILATE & BUILD --------"
-	$(VERILATOR) -cc --trace --exe -sv systolic_array_frame_temp.sv systolic_array.sv scheduler.sv input_skewer.sv systolic_pe.sv madd.sv VX_multiplier.sv VX_shift_register.sv sim_temp.cpp
+	$(VERILATOR) -cc --trace --exe -sv systolic_array_frame_temp.sv data_fetcher.sv weight_buffer.sv systolic_array.sv scheduler.sv input_skewer.sv systolic_pe.sv madd.sv VX_multiplier.sv VX_shift_register.sv sim_temp.cpp
 	@echo "-- COMPILE -----------------"
 	$(MAKE) -j 4 -C obj_dir -f Vsystolic_array_frame_temp.mk 
 	@echo "-- RUN ---------------------"
@@ -95,13 +95,13 @@ data_fetcher:
 	obj_dir/Vdata_fetcher
 	@echo "-- DONE --------------------"
 
-input_buffer:
+weight_buffer:
 	@echo "-- VERILATE & BUILD --------"
-	$(VERILATOR) -cc --trace --exe -sv input_buffer.sv sim_input_buffer.cpp
+	$(VERILATOR) -cc --trace --exe -sv weight_buffer.sv sim_weight_buffer.cpp
 	@echo "-- COMPILE -----------------"
-	$(MAKE) -j 4 -C obj_dir -f Vinput_buffer.mk 
+	$(MAKE) -j 4 -C obj_dir -f Vweight_buffer.mk 
 	@echo "-- RUN ---------------------"
-	obj_dir/Vinput_buffer
+	obj_dir/Vweight_buffer
 	@echo "-- DONE --------------------"
 
 ######################################################################

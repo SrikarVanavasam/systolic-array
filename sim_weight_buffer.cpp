@@ -1,8 +1,8 @@
 #include <iostream>
 #include "verilated.h"
 #include <verilated_vcd_c.h>
-#include "Vinput_buffer.h"
-#include "Vinput_buffer__Syms.h"
+#include "Vweight_buffer.h"
+#include "Vweight_buffer__Syms.h"
 
 uint64_t timestamp = 0;
 
@@ -14,30 +14,30 @@ uint64_t timestamp = 0;
 
 int main(int argc, char **argv, char **env)
 {
-    Vinput_buffer *input_buffer = new Vinput_buffer;
+    Vweight_buffer *weight_buffer = new Vweight_buffer;
 
     Verilated::traceEverOn(true);
     auto trace = new VerilatedVcdC();
-    input_buffer->trace(trace, 2999);
+    weight_buffer->trace(trace, 2999);
     trace->open("trace.vcd");
     while (timestamp < RUN_CYCLES)
     {
         if (!(timestamp % CLOCK_PERIOD))
         {
-            input_buffer->clk = !input_buffer->clk;
-            if (input_buffer->clk)
+            weight_buffer->clk = !weight_buffer->clk;
+            if (weight_buffer->clk)
             {
-                std::cout << "Cycle: " << timestamp / (CLOCK_PERIOD * 2) << " Out: " << input_buffer->data_w_interval_out[0] << " " << input_buffer->data_w_interval_out[1] << std::endl;
+                std::cout << "Cycle: " << timestamp / (CLOCK_PERIOD * 2) << " Out: " << weight_buffer->data_out[0] << " " << weight_buffer->data_out[1] << std::endl;
             }
         }
         if (timestamp < RESET_TIME)
         {
-            input_buffer->reset = 1; // Assert reset
+            weight_buffer->reset = 1; // Assert reset
         }
         else
         {
-            input_buffer->reset = 0; // Deassert reset
-            input_buffer->enable = 1;
+            weight_buffer->reset = 0; // Deassert reset
+            weight_buffer->enable = 1;
         }
         /**
          * Testing matrix multiply
@@ -51,13 +51,13 @@ int main(int argc, char **argv, char **env)
          */
         // Load a weight
 
-        input_buffer->eval();
+        weight_buffer->eval();
         trace->dump(timestamp);
         timestamp++;
     }
-    input_buffer->final();
+    weight_buffer->final();
     trace->close();
     delete trace;
-    delete input_buffer;
+    delete weight_buffer;
     return 0;
 }
