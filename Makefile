@@ -95,6 +95,15 @@ data_fetcher:
 	obj_dir/Vdata_fetcher
 	@echo "-- DONE --------------------"
 
+input_buffer:
+	@echo "-- VERILATE & BUILD --------"
+	$(VERILATOR) -cc --trace --exe -sv input_buffer.sv sim_input_buffer.cpp
+	@echo "-- COMPILE -----------------"
+	$(MAKE) -j 4 -C obj_dir -f Vinput_buffer.mk 
+	@echo "-- RUN ---------------------"
+	obj_dir/Vinput_buffer
+	@echo "-- DONE --------------------"
+
 ######################################################################
 
 maintainer-copy::

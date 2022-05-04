@@ -9,7 +9,7 @@ module data_fetcher
 reg [DATA_SIZE-1:0] data_w_interval [MATRIX_SIZE-1:0];
 
 reg [DATA_SIZE-1:0] dmem [MATRIX_SIZE * MATRIX_SIZE-1:0];
-wire [DATA_SIZE-1:0] dmem_out [MATRIX_SIZE * MATRIX_SIZE-1:0];
+// wire [DATA_SIZE-1:0] dmem_out [MATRIX_SIZE * MATRIX_SIZE-1:0];
 
 reg [1:0] counter;
 reg [31:0] pointer;
@@ -18,19 +18,15 @@ reg [31:0] pointer;
 always @ (posedge clk or posedge reset) begin
     if (reset || !enable) begin
         for (int i = 0; i < MATRIX_SIZE; i++) begin
-            assign data_w_interval[i] = 32'b0;
+            data_w_interval[i] <= 32'b0;
         end
         counter <= 0;
         pointer <= 0;
 
-        for (int i = 0; i < MATRIX_SIZE*MATRIX_SIZE; i++) begin
-            dmem[i] <= i + 1;
-        end
-
-        // dmem [0] <= 1;
-        // dmem [1] <= 2;
-        // dmem [2] <= 3;
-        // dmem [3] <= 4;
+        dmem[0] <= 1;
+        dmem[1] <= 3;
+        dmem[2] <= 2;
+        dmem[3] <= 4;
     end
     else if (pointer > MATRIX_SIZE*MATRIX_SIZE - MATRIX_SIZE) begin
         for (int i = 0; i < MATRIX_SIZE; i++) begin

@@ -3,7 +3,7 @@ module scheduler #(
     parameter DATA_SIZE = 32
 ) (
     input wire clk, reset, general_enable, 
-    output wire [MATRIX_SIZE-1:0] load_weight,     // each bit controls one row
+    output wire load_weight,     // each bit controls one row
     output wire [MATRIX_SIZE-1:0] enable_mult,     // each bit controls one row
     // output wire done_load_wire,
     output wire done
@@ -17,10 +17,10 @@ module scheduler #(
     reg done_next;
     
     // signals for pipelining
-    reg[MATRIX_SIZE-1:0] load_weight_next;
-    reg[MATRIX_SIZE-1:0] enable_mult_next;
-    reg [MATRIX_SIZE-1:0] load_weight_reg;     // each bit controls one row
-    reg [MATRIX_SIZE-1:0] enable_mult_reg;     // each bit controls one row
+    reg [MATRIX_SIZE-1:0] load_weight_next;
+    reg [MATRIX_SIZE-1:0] enable_mult_next;
+    reg load_weight_reg;
+    reg enable_mult_reg;
     reg done_reg;
 
     // initialize signals
@@ -109,8 +109,8 @@ module scheduler #(
 
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-            load_weight_reg = {MATRIX_SIZE{1'b0}};
-            enable_mult_reg = {MATRIX_SIZE{1'b0}};
+            load_weight_reg = 0;
+            enable_mult_reg = 0;
             load_counter = 0;
             mult_counter = 0;
             done_load = 0;
@@ -130,6 +130,6 @@ module scheduler #(
     // assign done_load_wire = done_load;
     assign done = (cycle_count < ((2*MATRIX_SIZE) * 4 + MATRIX_SIZE + 4)) ? 0 : 1;
     assign enable_mult = (cycle_count < ((2*MATRIX_SIZE - 1) * 4 + MATRIX_SIZE) && general_enable) ? {MATRIX_SIZE{1'b1}} : {MATRIX_SIZE{1'b0}};
-    assign load_weight = (general_enable && (cycle_count < MATRIX_SIZE)) ? {MATRIX_SIZE{1'b1}} : {MATRIX_SIZE{1'b0}};
+    assign load_weight = (general_enable && (cycle_count < MATRIX_SIZE)) ? 1 : 0;
     
 endmodule
